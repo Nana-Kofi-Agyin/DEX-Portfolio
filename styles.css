@@ -17,6 +17,9 @@
     --text-color: #ffffff;
     --main-color: #00ff88;
     --accent-color: #b74b4b;
+    --mouse-x: 50%;
+    --mouse-y: 50%;
+    --proximity: 0;
 }
 
 html {
@@ -27,6 +30,48 @@ html {
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
+    position: relative;
+}
+
+body::before,
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    transition: opacity 0.3s ease;
+}
+
+body::before {
+    background:
+        radial-gradient(
+            circle 42rem at var(--mouse-x) var(--mouse-y),
+            rgba(0, 255, 136, calc(0.18 * var(--proximity))),
+            rgba(0, 255, 136, 0) 60%
+        ),
+        radial-gradient(
+            circle 30rem at calc(var(--mouse-x) + 18%) calc(var(--mouse-y) - 14%),
+            rgba(183, 75, 75, calc(0.14 * var(--proximity))),
+            rgba(183, 75, 75, 0) 62%
+        );
+}
+
+body::after {
+    opacity: calc(0.22 * var(--proximity));
+    background-image:
+        linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px);
+    background-size: 4.5rem 4.5rem;
+    mask-image: radial-gradient(circle 34rem at var(--mouse-x) var(--mouse-y), black 20%, transparent 72%);
+    -webkit-mask-image: radial-gradient(circle 34rem at var(--mouse-x) var(--mouse-y), black 20%, transparent 72%);
+}
+
+header,
+section,
+footer {
+    position: relative;
+    z-index: 3;
 }
 
 /* Header */
@@ -573,6 +618,13 @@ footer {
     .img-box {
         width: 30rem;
         height: 30rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body::before,
+    body::after {
+        transition: none;
     }
 }
 

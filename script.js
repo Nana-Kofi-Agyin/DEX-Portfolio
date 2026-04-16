@@ -1,4 +1,53 @@
 // Smooth scrolling for navigation links
+const root = document.documentElement;
+let pointerActive = false;
+let targetX = window.innerWidth / 2;
+let targetY = window.innerHeight / 2;
+let currentX = targetX;
+let currentY = targetY;
+
+function updateProximityBackground() {
+    currentX += (targetX - currentX) * 0.12;
+    currentY += (targetY - currentY) * 0.12;
+
+    root.style.setProperty('--mouse-x', `${currentX}px`);
+    root.style.setProperty('--mouse-y', `${currentY}px`);
+
+    requestAnimationFrame(updateProximityBackground);
+}
+
+window.addEventListener('pointermove', (event) => {
+    targetX = event.clientX;
+    targetY = event.clientY;
+    if (!pointerActive) {
+        pointerActive = true;
+        root.style.setProperty('--proximity', '1');
+    }
+});
+
+window.addEventListener('pointerleave', () => {
+    pointerActive = false;
+    root.style.setProperty('--proximity', '0');
+});
+
+window.addEventListener('blur', () => {
+    pointerActive = false;
+    root.style.setProperty('--proximity', '0');
+});
+
+window.addEventListener('pointerdown', () => {
+    root.style.setProperty('--proximity', '1');
+});
+
+window.addEventListener('resize', () => {
+    if (!pointerActive) {
+        targetX = window.innerWidth / 2;
+        targetY = window.innerHeight / 2;
+    }
+});
+
+updateProximityBackground();
+
 document.querySelectorAll('nav a').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
         e.preventDefault();
